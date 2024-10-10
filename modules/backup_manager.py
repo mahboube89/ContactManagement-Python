@@ -1,6 +1,7 @@
 import os
 from datetime import datetime
 import shutil
+import utils.helper_functions as hf
 
 
 class BackupManager:
@@ -49,8 +50,61 @@ class BackupManager:
         try:
             # Copy the file to the backup folder
             shutil.copy(db_name, backup_db)
+            hf.show_success_message(f"Backup successfully created: {backup_db}")
         except FileNotFoundError:
             print(f"Error: The contact file '{db_name}' was not found.")
         except Exception as e:
             print(f"Error during backup: {str(e)}")
+            
+    def get_backup_file(self, backup_filename):
+        """
+        Checks if the backup file exists and returns the full file path.
+        
+        Parameters:
+        -----------
+        backup_filename : str
+            The name of the backup file to check.
+        
+        Returns:
+        --------
+        str or None
+            The full path to the backup file if it exists, otherwise None.
+        """
+        # Construct the full path to the backup file
+        backup_file = os.path.join(self.backup_folder, backup_filename)
+        
+        # Check if the backup file exists
+        if os.path.exists(backup_file):
+            return backup_file
+        else:
+            hf.show_error_message(f"Backup file {backup_filename} not found.")
+            return None
+    
+    def list_recent_backups(self, n=3):
+        """
+        Lists the most recent backup files in the backup folder.
+
+        Parameters:
+        -----------
+        n : int, optional
+            The number of recent backups to return (default is 3).
+
+        Returns:
+        --------
+        list
+            A list of the most recent backup filenames, or an empty list if none are found.
+        """
+        # Check if the backup folder exists
+        if not os.path.exists(self.backup_folder):
+            hf.show_error_message(f"Backup folder '{self.backup_folder}' not found.")
+            return []
+    
+        # List all files that start with "contacts_backup_" in the backup folder
+        backup_files = [file for file in os.listdir(self.backup_folder) if file.startswith("contacts_backup_")]
+        
+        # Sort the files by their modification time in descending order
+        backup_files.sort(key=lambda x: os.path.getmtime(os.path.join(self.backup_folder, x)), reverse=True)
+
+        # Return the most recent 'n' backup files
+        return backup_files[:n]
 

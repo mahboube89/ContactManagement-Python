@@ -101,7 +101,7 @@ def update_contact_process(contact_manager):
     elif len(found_contacts) > 1:
         print("\nMultiple contacts found:")
         for i, contact in enumerate(found_contacts, start=1):
-            print(f"\033[1;34m{i})\033[0m {contact.name} - {', '.join(contact.phones)}")
+            print(f"\033[1;36m{i})\033[0m {contact.name} - {', '.join(contact.phones)}")
             
         # Allow user to select the correct contact
         try:
@@ -226,7 +226,7 @@ def delete_contact_process(contact_manager):
     elif len(found_contacts) > 1:
         print("\nMultiple contacts found:")
         for i, contact in enumerate(found_contacts, start=1):
-            print(f"\033[1;34m{i})\033[0m {contact.name} - {', '.join(contact.phones)}")
+            print(f"\033[1;36m{i})\033[0m {contact.name} - {', '.join(contact.phones)}")
             
         # Prompt the user to choose the correct contact
         # Use try-except to handle invalid input when selecting a contact
@@ -296,6 +296,54 @@ def search_contact_process(contact_manager):
         hf.show_error_message(f"No contacts found matching '{search_term}'.")
 
 
+def restore_backup(contact_manager):
+    """
+    Handles the process of restoring a backup of contacts.
+    
+    Parameters:
+    -----------
+    contact_manager : ContactManager
+        The instance of the ContactManager class that manages contacts.
+    
+    Returns:
+    --------
+    None
+    """
+    # Get a list of recent backups (default: last 3)
+    recent_backups = contact_manager.backup_manager.list_recent_backups(n=3)
+    
+    # Inform user if no backups are found
+    if not recent_backups:
+        hf.show_info_message("No backups available.")
+        return
+    
+    # Display the available backups
+    hf.show_info_message("\nAvailable Backups:")
+    for index, backup_file in enumerate(recent_backups, start=1):
+        print(f"\033[1;36m{index})\033[0m {backup_file}")
+
+    # Prompt the user to choose a backup to restore or to cancel
+    choice = input(f"Enter the number of the backup to restore (1-{len(recent_backups)}) or '0' to Exit: ")
+    
+    # Check if the user wants to cancel the process
+    if hf.check_cancel(choice, "Backup restoration"):
+        return  # Exit the function if the user cancels
+    
+    try:
+        # Convert the user's choice to an integer
+        choice = int(choice)
+        
+        # Validate the user's choice
+        if 1 <= choice <= len(recent_backups):
+            backup_filename = recent_backups[choice - 1]
+            contact_manager.restore_backup(backup_filename)
+            hf.show_info_message("Restoring from backup...")
+            hf.show_success_message(f"Backup '{backup_filename}' successfully restored.\n")
+        else:
+            hf.show_error_message("Invalid selection.\n")
+    except ValueError:
+        hf.show_error_message("Invalid input. Please enter a number.\n")
+
 def main():
     """
     Main function to run the Contact Manager system.
@@ -326,9 +374,9 @@ def main():
         elif choice == "5":
             search_contact_process(contact_manager)
         elif choice == "6":
-            pass
+            contact_manager.backup_manager.create_backup(contact_manager.db_name)
         elif choice == "7":
-            pass
+            restore_backup(contact_manager)
         elif choice == "0" or choice.lower() in ["exit"]:
             hf.show_info_message("Thank you for using our service. See you soon!\n")
             break
