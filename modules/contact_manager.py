@@ -26,8 +26,7 @@ class ContactManager:
                 f"Error: The file '{self.db_name}' was not found."
             )
             
-
-           
+       
     def _read_from_file(self, file_name):
         """
         Loads contacts from the specified JSON file.
