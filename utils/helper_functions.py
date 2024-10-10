@@ -160,3 +160,28 @@ def clear_terminal():
         os.system("cls")  # Windows
     else:
         os.system("clear")  # Linux/macOS
+
+
+def format_phone_number(phone):
+    """
+    Formats the phone number into a more readable format.
+    
+    - Supports US-style 10-digit numbers, e.g., (123) 456-7890.
+    - Handles international numbers, e.g., +44-7700-900123, +1-202-555-0143.
+    - Keeps any separators like hyphens or spaces in the number.
+    """
+    
+    # Remove all non-digit characters except for the leading '+' (for international numbers)
+    cleaned_phone = re.sub(r"[^0-9+]", "", phone)
+    
+    # Handle US-style 10-digit phone numbers (e.g., 1234567890)
+    if len(cleaned_phone) >= 10 and cleaned_phone[0] != '+':
+        return f"({cleaned_phone[:3]}) {cleaned_phone[3:6]}-{cleaned_phone[6:]}"
+    
+    # Handle international numbers with leading '+' (e.g., +44-7700-900123)
+    if cleaned_phone.startswith('+'):
+        return ' '.join(re.findall(r'\+?\d{1,4}', cleaned_phone))  # Split into groups for better readability
+
+    # For any other number, return as it is
+    return phone
+

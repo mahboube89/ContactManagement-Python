@@ -160,7 +160,7 @@ class ContactManager:
         for index, contact in enumerate(self.contacts, start=1):
             
             # Show first phone on the same line
-            phones_str = contact.phones[0]
+            phones_str = hf.format_phone_number(contact.phones[0])
             print(f"{index:<5} {contact.name:^15} {phones_str:^25} {contact.email or '-':^25} {contact.address or '-':^30} {contact.birthday or '-':^18}")
 
             # Show additional phone numbers on separate lines
@@ -176,7 +176,7 @@ class ContactManager:
         """
         hf.show_title(f"Displaying {len(self.contacts)} contact(s):")
         for contact in self.contacts:
-            phones_str = ", ".join(contact.phones)
+            phones_str = ", ".join([hf.format_phone_number(phone) for phone in contact.phones])
             print(f"{'-'*40}")
             print(f"Name:      {contact.name.title()}")
             print(f"Phones:    {phones_str}")

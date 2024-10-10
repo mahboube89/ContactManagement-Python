@@ -101,7 +101,7 @@ def update_contact_process(contact_manager):
     elif len(found_contacts) > 1:
         print("\nMultiple contacts found:")
         for i, contact in enumerate(found_contacts, start=1):
-            print(f"\033[1;36m{i})\033[0m {contact.name} - {', '.join(contact.phones)}")
+            print(f"\033[1;36m{i})\033[0m {contact.name} - {', '.join([hf.format_phone_number(phone) for phone in contact.phones])}")
             
         # Allow user to select the correct contact
         try:
@@ -121,7 +121,7 @@ def update_contact_process(contact_manager):
         
         # Show current contact details
         for i, contact in enumerate(found_contacts, start=1):
-            phones_str = ", ".join(contact.phones)
+            phones_str = ", ".join([hf.format_phone_number(phone) for phone in contact.phones])
             print(f"{'-'*40}")
             print(f"Name:      {contact.name.title()}")
             print(f"Phones:    {phones_str}")
@@ -226,7 +226,7 @@ def delete_contact_process(contact_manager):
     elif len(found_contacts) > 1:
         print("\nMultiple contacts found:")
         for i, contact in enumerate(found_contacts, start=1):
-            print(f"\033[1;36m{i})\033[0m {contact.name} - {', '.join(contact.phones)}")
+            print(f"\033[1;36m{i})\033[0m {contact.name} - {', '.join([hf.format_phone_number(phone) for phone in contact.phones])}")
             
         # Prompt the user to choose the correct contact
         # Use try-except to handle invalid input when selecting a contact
@@ -282,7 +282,7 @@ def search_contact_process(contact_manager):
     if results:
         hf.show_info_message(f"Found {len(results)} contact(s):")
         for contact in results:
-            phones_str = ", ".join(contact.phones)
+            phones_str = ", ".join([hf.format_phone_number(phone) for phone in contact.phones])
             print(f"{'-'*40}")
             print(f"Name:      {contact.name.title()}")
             print(f"Phones:    {phones_str}")
