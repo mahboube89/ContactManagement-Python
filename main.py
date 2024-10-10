@@ -251,6 +251,51 @@ def delete_contact_process(contact_manager):
     contact_manager.delete_contact(contact.name)
 
 
+def search_contact_process(contact_manager):
+    """
+    Handles the process of searching for contacts by name.
+    
+    Parameters:
+    -----------
+    contact_manager : ContactManager
+        The instance of the ContactManager class that manages contacts.
+    
+    Returns:
+    --------
+    None
+    """
+    # Show title for the search process
+    hf.show_title("search")
+    
+    # Prompt the user for a search term
+    search_term = input("Enter name to search: ").strip().lower()
+    
+    # Check if the search term is empty
+    if not search_term:
+        hf.show_error_message("No search term entered. Please enter a name.")
+        return
+    
+    # Search for contacts matching the entered name
+    results = contact_manager.search_contact(search_term)
+    
+    # If results are found, display them
+    if results:
+        hf.show_info_message(f"Found {len(results)} contact(s):")
+        for contact in results:
+            phones_str = ", ".join(contact.phones)
+            print(f"{'-'*40}")
+            print(f"Name:      {contact.name.title()}")
+            print(f"Phones:    {phones_str}")
+            print(f"Email:     {contact.email if contact.email else '-'}")
+            print(f"Address:   {contact.address if contact.address else '-'}")
+            print(f"Birthday:  {contact.birthday if contact.birthday else '-'}")
+            print(f"{'-'*40}\n")
+    
+    # If no results are found, show an error message   
+    else:
+        hf.show_error_message(f"No contacts found matching '{search_term}'.")
+
+
 def main():
     """
     Main function to run the Contact Manager system.
@@ -279,7 +324,7 @@ def main():
         elif choice == "4":
             delete_contact_process(contact_manager)
         elif choice == "5":
-            pass
+            search_contact_process(contact_manager)
         elif choice == "6":
             pass
         elif choice == "7":
