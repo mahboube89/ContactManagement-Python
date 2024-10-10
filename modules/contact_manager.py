@@ -1,6 +1,7 @@
 import json
 from modules.backup_manager import BackupManager
 from modules.contact import Contact
+from utils.helper_functions import show_error_message, show_success_message, show_warning_message
 
 
 class ContactManager:
@@ -17,9 +18,16 @@ class ContactManager:
 
     def load_contacts(self):
         """Loads contacts from the JSON database file, if it exists."""
-        # Read contacts from the file
-        self.contacts = self._read_from_file(self.db_name)
+        try:
+            # Read contacts from the file
+            self.contacts = self._read_from_file(self.db_name)
+        except FileNotFoundError:
+            show_error_message(
+                f"Error: The file '{self.db_name}' was not found."
+            )
+            
 
+           
     def _read_from_file(self, file_name):
         """
         Loads contacts from the specified JSON file.
@@ -39,17 +47,25 @@ class ContactManager:
                 return [Contact(**data) for data in contacts_list]
 
         except FileNotFoundError:
-            print(f"File {file_name} not found.")
+            show_warning_message(
+                f"Warning: File {file_name} not found."
+            )
             return []
 
         except json.JSONDecodeError:
-            print(f"Error: The file '{file_name}' contains invalid JSON.")
+            show_error_message(
+                f"Error: Invalid JSON in '{file_name}'."
+            )
             return []
 
         except IOError:
-            print(f"Error: I/O error while reading '{file_name}'.")
+            show_error_message(
+                f"Error: I/O error while reading '{file_name}'."
+            )
             return []
 
         except Exception as e:
-            print(f"An unexpected error occurred: {str(e)}")
+            show_error_message(
+                f"An unexpected error occurred: {str(e)}"
+            )
             return []
