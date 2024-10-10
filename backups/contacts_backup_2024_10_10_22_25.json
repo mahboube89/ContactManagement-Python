@@ -7,15 +7,5 @@
         "email": "s-sabry@gmail.de",
         "address": "Kirchstr.9, 41450 Neuss",
         "birthday": "12.01.1990"
-    },
-    {
-        "name": "john robert",
-        "phones": [
-            "01754501918",
-            "01652346808"
-        ],
-        "email": "",
-        "address": "",
-        "birthday": "23.09.1970"
     }
 ]

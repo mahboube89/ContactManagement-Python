@@ -1,3 +1,6 @@
+import re
+
+
 def show_success_message(message):
     """
     Displays a success message in light green text.
@@ -40,3 +43,80 @@ def show_info_message(message):
         The message to be displayed as an informational notification.
     """
     print("\033[0;94m" + message + "\033[0m\n")  # Blue for information
+
+
+def show_title(title):
+    """
+    Displays a title in formatted text.
+    """
+    print("\n\033[1;36m" + "-" * 40)
+    print(f"\t{title.upper()}")
+    print("-" * 40 + "\033[0m")
+    
+  
+def get_valid_input(prompt, validation_function, attempts=3, allow_empty=False):
+    """
+    Asks for input and validates it. Retries if invalid.
+    """
+    
+    while attempts > 0:
+        user_input = input(prompt)
+        
+        # Return if user enters "0" (exit condition)
+        if user_input == "0":
+            return "0"
+        
+        # Allow empty input if specified
+        if allow_empty and user_input == "":
+            return ""
+        
+        # Validate input using the provided function
+        if validation_function(user_input):
+            return user_input
+        
+        # Decrease attempts and show message if invalid
+        attempts -= 1
+        show_warning_message(
+            f"Invalid input. You have {attempts} attempts left."
+        )
+        
+    # Return None after all attempts fail (Back to Menu)
+    return None  
+
+
+def is_valid_phone(phone):
+    """
+    Validates phone numbers (only digits, min length 7).
+    """
+    return phone.isdigit() and len(phone) >= 7
+
+
+def get_phones():
+    """
+    Collects and validates multiple phone numbers from the user.
+    """
+    phones = []
+    while True:
+        phone = phone = input("\n- Enter phone number (or type 'done' to finish): ")
+        if phone.lower() == "done":
+            break
+        if is_valid_phone(phone):
+            phones.append(phone)
+        else:
+            print("Invalid phone number. Please enter a valid 10-digit number.")
+    return phones
+
+
+def is_valid_name(name):
+    """
+    Validates names (letters, spaces, hyphens; length 2-50).
+    """
+    return re.match(r"^[A-Za-z\s\-]{2,50}$", name) is not None
+
+
+def is_valid_email(email):
+    """
+    Validates email addresses.
+    """
+    email_regex = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
+    return re.match(email_regex, email) is not None

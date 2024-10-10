@@ -1,4 +1,5 @@
 from modules.contact_manager import ContactManager
+from utils.helper_functions import is_valid_name, is_valid_email, is_valid_phone, get_phones, get_valid_input, show_title, show_error_message, show_success_message
 
 
 def display_menu():
@@ -23,6 +24,55 @@ def display_menu():
     print("\033[1;36m" + "=" * 40 + "\033[0m")
 
 
+def add_new_contact(contact_manager):
+    """
+    Adds a new contact to the contact manager.
+
+    This function prompts the user to input the contact's information.
+    It validates the name and phone number(s) to ensure they are correctly
+    formatted. Optional field can be left blank.
+
+    Parameters:
+    contact_manager (ContactManager): The instance of ContactManager class.
+
+    Returns:
+    None
+    """
+    # Display title for adding a new contact
+    show_title("Add new contact")
+    
+    # Get and validate the contact's name
+    name = get_valid_input(
+        "\n- Enter contact name: ", is_valid_name
+        ).lower().strip()
+    if name is None:
+        show_error_message(
+            "Error: Failed to add contact. Invalid name."
+        )
+        return
+    
+    # Get and validate phone numbers
+    phones = get_phones()
+    if not phones:
+        show_error_message(
+            "Error: Failed to add contact. No valid phone numbers."
+        )
+        return
+    
+    # Get email, address and birthday (optional)
+    email = get_valid_input(
+        "\n- Enter email (optional): ", is_valid_email,
+        attempts=1,
+        allow_empty=True
+        ).lower().strip()
+    
+    address = input("\n- Enter address (optional): ")
+    birthday = input("\n- Enter birthday (optional): ")
+
+    # Add the contact to the contact manager
+    contact_manager.add_contact(name, phones, email, address, birthday)
+
+
 def main():
     """
     Main function to run the Contact Manager system.
@@ -43,7 +93,7 @@ def main():
         
         # Handle the user's choice
         if choice == "1":
-            pass
+            add_new_contact(contact_manager)
         elif choice == "2":
             pass
         elif choice == "3":
@@ -57,7 +107,7 @@ def main():
         elif choice == "7":
             pass
         elif choice == "0" or choice.lower() in ["exit"]:
-            print("Exiting the system. Goodbye!\n")
+            print("Thank you for using our service. See you soon!\n")
             break
         else:
             print("Invalid choice. Please select a valid option (1-7) or 0 to Exit.\n")
