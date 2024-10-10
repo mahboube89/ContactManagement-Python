@@ -25,8 +25,8 @@ class ContactManager:
             show_error_message(
                 f"Error: The file '{self.db_name}' was not found."
             )
-            
-       
+
+
     def _read_from_file(self, file_name):
         """
         Loads contacts from the specified JSON file.
@@ -68,3 +68,49 @@ class ContactManager:
                 f"An unexpected error occurred: {str(e)}"
             )
             return []
+           
+        def _write_to_file(self, file_name, data):
+            """
+            Writes contact data to a file in JSON format.
+
+            Parameters:
+            -----------
+            file_name : str
+                The file to write the data to.
+            data : list
+                The list of contact objects to write.
+            """
+            try:
+                with open(file_name, "w", encoding="utf-8") as file:
+                    json.dump([contact.to_dict() for contact in data],
+                              file,
+                              indent=4)
+
+            except FileNotFoundError:
+                show_error_message(
+                    f"Error: The file '{file_name}' was not found."
+                )
+            except IOError:
+                show_error_message(
+                    f"Error: I/O error while writing to '{file_name}'."
+                )
+            except Exception as e:
+                show_error_message(
+                    f"An unexpected error occurred: {str(e)}"
+                )
+                
+        def save_contacts(self, create_backup=True):
+            """
+            Saves contacts to the database and optionally creates a backup.
+
+            Parameters:
+            -----------
+            create_backup : bool, optional
+                If True, creates a backup after saving (default is True).
+            """
+            # Write the current contacts to the database file
+            self._write_to_file(self.db_name, self.contacts)
+            
+            # If create_backup is True, create a backup of the contacts file
+            if create_backup:
+                self.backup_manager.create_backup(self.db_name)
