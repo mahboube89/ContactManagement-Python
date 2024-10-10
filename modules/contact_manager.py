@@ -41,8 +41,10 @@ class ContactManager:
         list | A list of Contact objects, or an empty list if an error occurs.
         """
         try:
+            
             with open(file_name, "r", encoding="utf-8") as file:
                 contacts_list = json.load(file)  # Load JSON data from the file
+                
                 # Convert JSON to Contact objects
                 return [Contact(**data) for data in contacts_list]
 
@@ -332,11 +334,19 @@ class ContactManager:
         """
         # Get the backup file path using BackupManager
         backup_file = self.backup_manager.get_backup_file(backup_filename)
-        
+
         # If the backup file exists, restore the contacts
         if backup_file:
-            self.contacts = self._read_from_file(backup_filename)
-            # hf.show_success_message(f"Backup {backup_filename} successfully restored.")
+            
+            contacts = self._read_from_file(backup_file)
+            
+            # Wenn Kontakte erfolgreich geladen wurden
+            if contacts is not None:
+                self.contacts = contacts
+                hf.show_info_message("\nRestoring from backup...")
+                hf.show_success_message(f"Backup '{backup_filename}' successfully restored.\n")
+            else:
+                hf.show_error_message(f"Failed to restore backup '{backup_filename}'.")
         else:
             hf.show_error_message(f"Unable to restore backup {backup_filename}.") 
             

@@ -335,10 +335,10 @@ def restore_backup(contact_manager):
         
         # Validate the user's choice
         if 1 <= choice <= len(recent_backups):
+            
             backup_filename = recent_backups[choice - 1]
+            
             contact_manager.restore_backup(backup_filename)
-            hf.show_info_message("Restoring from backup...")
-            hf.show_success_message(f"Backup '{backup_filename}' successfully restored.\n")
         else:
             hf.show_error_message("Invalid selection.\n")
     except ValueError:

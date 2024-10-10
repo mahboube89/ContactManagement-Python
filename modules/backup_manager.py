@@ -71,13 +71,13 @@ class BackupManager:
             The full path to the backup file if it exists, otherwise None.
         """
         # Construct the full path to the backup file
-        backup_file = os.path.join(self.backup_folder, backup_filename)
+        backup_file_path = os.path.join(self.backup_folder, backup_filename)
         
         # Check if the backup file exists
-        if os.path.exists(backup_file):
-            return backup_file
+        if os.path.exists(backup_file_path):
+            return backup_file_path
         else:
-            hf.show_error_message(f"Backup file {backup_filename} not found.")
+            # hf.show_error_message(f"Backup file {backup_filename} not found.")
             return None
     
     def list_recent_backups(self, n=3):
@@ -102,9 +102,11 @@ class BackupManager:
         # List all files that start with "contacts_backup_" in the backup folder
         backup_files = [file for file in os.listdir(self.backup_folder) if file.startswith("contacts_backup_")]
         
-        # Sort the files by their modification time in descending order
+        # # Sort the files by their modification time in descending order
         backup_files.sort(key=lambda x: os.path.getmtime(os.path.join(self.backup_folder, x)), reverse=True)
 
-        # Return the most recent 'n' backup files
+        # # Return the most recent 'n' backup files
         return backup_files[:n]
+        # backups = sorted(os.listdir(self.backup_folder), reverse=True)
+        # return backups[:n]
 
