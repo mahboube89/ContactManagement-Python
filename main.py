@@ -1,5 +1,5 @@
 from modules.contact_manager import ContactManager
-from utils.helper_functions import is_valid_name, is_valid_email, is_valid_phone, get_phones, get_valid_input, show_title, show_error_message, show_success_message
+import utils.helper_functions as hf
 
 
 def display_menu():
@@ -39,29 +39,29 @@ def add_new_contact(contact_manager):
     None
     """
     # Display title for adding a new contact
-    show_title("Add new contact")
+    hf.show_title("Add new contact")
     
     # Get and validate the contact's name
-    name = get_valid_input(
-        "\n- Enter contact name: ", is_valid_name
+    name = hf.get_valid_input(
+        "\n- Enter contact name: ", hf.is_valid_name
         ).lower().strip()
     if name is None:
-        show_error_message(
+        hf.show_error_message(
             "Error: Failed to add contact. Invalid name."
         )
         return
     
     # Get and validate phone numbers
-    phones = get_phones()
+    phones = hf.get_phones()
     if not phones:
-        show_error_message(
+        hf.show_error_message(
             "Error: Failed to add contact. No valid phone numbers."
         )
         return
     
     # Get email, address and birthday (optional)
-    email = get_valid_input(
-        "\n- Enter email (optional): ", is_valid_email,
+    email = hf.get_valid_input(
+        "\n- Enter email (optional): ", hf.is_valid_email,
         attempts=1,
         allow_empty=True
         ).lower().strip()
@@ -71,6 +71,115 @@ def add_new_contact(contact_manager):
 
     # Add the contact to the contact manager
     contact_manager.add_contact(name, phones, email, address, birthday)
+
+
+def update_contact_process(contact_manager):
+    """
+    Handles the process of updating a contact's details.
+    
+    Parameters:
+    -----------
+    contact_manager : ContactManager
+        The instance of the ContactManager class that manages contacts.
+    """
+    # Show title for editing contacts
+    hf.show_title("Edit contact details")
+    
+    # Prompt user to enter the name of the contact to update
+    name = input("Enter the name of the contact to update: ")
+    
+    # Search for matching contacts
+    found_contacts = contact_manager.search_contact(name)
+    
+    # Handle case where no contacts are found
+    if len(found_contacts) == 0:
+        hf.show_error_message(f"No contacts found matching '{name}'.")
+        hf.show_info_message("Returning to the main menu.\n")
+        return
+    
+    # Handle case where multiple contacts are found
+    elif len(found_contacts) > 1:
+        print("\nMultiple contacts found:")
+        for i, contact in enumerate(found_contacts, start=1):
+            print(f"\033[1;34m{i})\033[0m {contact.name} - {', '.join(contact.phones)}")
+            
+        # Allow user to select the correct contact
+        try:
+            choice = int(input("\nEnter the number of the contact to update: ")) - 1
+            if choice < 0 or choice >= len(found_contacts):
+                hf.show_error_message("Invalid choice.")
+                return
+            contact = found_contacts[choice]
+            print(contact)
+            
+        except ValueError:
+            hf.show_error_message("Invalid input. Please enter a number.")
+            return
+    else:
+        # If only one contact is found, proceed with that contact
+        contact = found_contacts[0]
+        
+        # Show current contact details
+        for i, contact in enumerate(found_contacts, start=1):
+            phones_str = ", ".join(contact.phones)
+            print(f"{'-'*40}")
+            print(f"Name:      {contact.name.title()}")
+            print(f"Phones:    {phones_str}")
+            print(f"Email:     {contact.email if contact.email else '-'}")
+            print(f"Address:   {contact.address if contact.address else '-'}")
+            print(f"Birthday:  {contact.birthday if contact.birthday else '-'}")
+            print(f"Notes:     {contact.notes if contact.notes else '-'}")
+            print(f"{'-'*40}\n")
+
+    # Get new details from the user, with options to leave fields unchanged
+    new_name = hf.get_valid_input(
+        "- Enter new name (leave blank to keep unchanged or type '0' to Exit): ",
+        hf.is_valid_name,
+        attempts=1,
+        allow_empty=True
+    )
+    if hf.check_cancel(new_name, "update"):
+        return
+    new_name = new_name or contact.name
+    
+    new_phones = hf.get_phones() or contact.phones
+    
+    new_email = hf.get_valid_input(
+        "\n- Enter new email (leave blank to keep unchanged or 0 to Exit): ",
+        hf.is_valid_email,
+        attempts=1,
+        allow_empty=True
+    )
+    if hf.check_cancel(new_email, "update"):
+        return
+    new_email = new_email or contact.email
+ 
+    new_address = input(
+        f"\n- Enter new address (leave blank to keep unchanged or 0 to Exit): "
+    )
+    if hf.check_cancel(new_address, "update"):
+        return
+    new_address = new_address or contact.address
+    
+    new_birthday = input(
+        f"\n- Enter new birthday (leave blank to keep unchanged or 0 to Exit): "
+    )
+    if hf.check_cancel(new_birthday, "update"):
+        return
+    new_birthday = new_birthday or contact.birthday
+    
+    # Call the update_contact method with the new values
+    if contact_manager.update_contact(
+        contact.name,
+        new_name=new_name,
+        new_phones=new_phones,
+        new_email=new_email,
+        new_address=new_address,
+        new_birthday=new_birthday
+    ):
+        hf.show_success_message(f"\nContact {contact.name} updated successfully.")
+    else:
+        hf.show_error_message("\nFailed to update contact.")
 
 
 def main():
@@ -97,7 +206,7 @@ def main():
         elif choice == "2":
             contact_manager.show_contacts()
         elif choice == "3":
-            pass
+            update_contact_process(contact_manager)
         elif choice == "4":
             pass
         elif choice == "5":
@@ -107,10 +216,10 @@ def main():
         elif choice == "7":
             pass
         elif choice == "0" or choice.lower() in ["exit"]:
-            print("Thank you for using our service. See you soon!\n")
+            hf.show_info_message("Thank you for using our service. See you soon!\n")
             break
         else:
-            print("Invalid choice. Please select a valid option (1-7) or 0 to Exit.\n")
+            hf.show_warning_message("Invalid choice. Please select a valid option (1-7) or 0 to Exit.\n")
 
 
 if __name__ == "__main__":

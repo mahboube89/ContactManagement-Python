@@ -214,3 +214,63 @@ class ContactManager:
                 else:
                     # Handle invalid view option choice
                     hf.show_warning_message("Invalid choice. Please select '1', '2', or '0' to cancel.")
+
+    def search_contact(self, search_term):
+        """
+        Searches for contacts by name.
+
+        Parameters:
+        -----------
+        search_term : str
+            The term to search for in contact names.
+
+        Returns:
+        --------
+        list
+            A list of contacts whose names contain the search term.
+        """
+        # Normalize the search term by converting it to lowercase and removing spaces
+        search_term = search_term.lower().strip()
+        
+        # Find contacts where the search term is part of the name
+        results = [contact for contact in self.contacts if search_term in contact.name.lower()]
+        return results
+
+    def update_contact(self, orginal_name, **kwargs):
+        """
+        Updates a contact's fields dynamically based on provided keyword arguments.
+        
+        Parameters:
+        -----------
+        orginal_name : str
+            The current name of the contact to be updated.
+        **kwargs : dict
+            A dictionary of new values for the contact's fields (e.g., new_name, new_phones).
+        
+        Returns:
+        --------
+        bool
+            True if the contact was successfully updated, False otherwise.
+        """
+        for contact in self.contacts:
+            if contact.name == orginal_name:
+                # Update contact fields based on provided kwargs           
+                if 'new_name' in kwargs:
+                    contact.name = kwargs['new_name']
+                if 'new_phones' in kwargs:
+                    contact.phones = kwargs['new_phones']
+                if 'new_email' in kwargs:
+                    contact.email = kwargs['new_email']
+                if 'new_address' in kwargs:
+                    contact.address = kwargs['new_address']
+                if 'new_birthday' in kwargs:
+                    contact.birthday = kwargs['new_birthday']
+                if 'new_notes' in kwargs:
+                    contact.notes = kwargs['new_notes']
+                
+                # Save the updated contacts 
+                self.save_contacts()
+                # hf.show_success_message(f"Contact {orginal_name.title()} updated successfully.")
+                return True
+        return False  # Contact not found
+    

@@ -120,3 +120,25 @@ def is_valid_email(email):
     """
     email_regex = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
     return re.match(email_regex, email) is not None
+
+
+def check_cancel(input_value, process):
+    """
+    Checks if the user wants to cancel the current process based on their input.
+    
+    Parameters:
+    -----------
+    input_value : str
+        The user's input value to be checked (e.g., "exit", "0", "cancel").
+    process : str
+        The name of the current process (used in the cancellation message).
+    
+    Returns:
+    --------
+    bool
+        Returns True if the user wants to cancel, False otherwise.
+    """
+    if input_value.lower() in ["exit", "0", "cancel"]:
+        show_error_message(f"{process.title()} process cancelled.")
+        return True
+    return False
