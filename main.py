@@ -95,7 +95,7 @@ def main():
         if choice == "1":
             add_new_contact(contact_manager)
         elif choice == "2":
-            pass
+            contact_manager.show_contacts()
         elif choice == "3":
             pass
         elif choice == "4":
