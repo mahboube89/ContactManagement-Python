@@ -155,14 +155,14 @@ def update_contact_process(contact_manager):
     new_email = new_email or contact.email
  
     new_address = input(
-        f"\n- Enter new address (leave blank to keep unchanged or 0 to Exit): "
+        "\n- Enter new address (leave blank to keep unchanged or 0 to Exit): "
     )
     if hf.check_cancel(new_address, "update"):
         return
     new_address = new_address or contact.address
     
     new_birthday = input(
-        f"\n- Enter new birthday (leave blank to keep unchanged or 0 to Exit): "
+        "\n- Enter new birthday (leave blank to keep unchanged or 0 to Exit): "
     )
     if hf.check_cancel(new_birthday, "update"):
         return
@@ -180,6 +180,75 @@ def update_contact_process(contact_manager):
         hf.show_success_message(f"\nContact {contact.name} updated successfully.")
     else:
         hf.show_error_message("\nFailed to update contact.")
+
+
+def delete_contact_process(contact_manager):
+    """
+    Handles the process of deleting a contact.
+    
+    Parameters:
+    -----------
+    contact_manager : ContactManager
+        The instance of the ContactManager class that manages contacts.
+    
+    Returns:
+    --------
+    None
+    """
+    # Show title for delete process
+    hf.show_title("Delete")
+    
+    # Prompt user for the contact name
+    while True:
+
+        name = input("Enter the name of the contact to delete or '0'to Exit: ").lower().strip()
+        
+        # Check if the user wants to cancel the deletion process
+        if hf.check_cancel(name, "delete"):
+            return
+        
+        # Check if the input is a number (which is not allowed for a name)
+        if name.isdigit():
+            hf.show_error_message("Invalid input. Please enter a valid contact name, not a number.")
+        else:
+            break
+    
+    # Search for contacts matching the entered name
+    found_contacts = contact_manager.search_contact(name)
+    
+    # If no matching contacts are found
+    if len(found_contacts) == 0:
+        hf.show_warning_message(f"No contacts found matching '{name}'.")
+        hf.show_info_message("Returning to the main menu.\n")
+        return
+    
+    # If multiple contacts are found, prompt the user to select one
+    elif len(found_contacts) > 1:
+        print("\nMultiple contacts found:")
+        for i, contact in enumerate(found_contacts, start=1):
+            print(f"\033[1;34m{i})\033[0m {contact.name} - {', '.join(contact.phones)}")
+            
+        # Prompt the user to choose the correct contact
+        # Use try-except to handle invalid input when selecting a contact
+        try:
+            
+            choice = int(input("\nEnter the number of the contact to delete: ")) - 1
+            if choice < 0 or choice >= len(found_contacts):
+                hf.show_error_message("Invalid choice.")
+                return
+        
+            # Select the chosen contact for deletion
+            contact = found_contacts[choice]
+        except ValueError:
+            hf.show_error_message("Invalid input. Please enter a valid number.")
+            return
+    else:
+        # If only one contact is found, proceed with deletion
+        contact = found_contacts[0]
+        print(contact)
+        
+    # Call the delete_contact method to remove the selected contact
+    contact_manager.delete_contact(contact.name)
 
 
 def main():
@@ -208,7 +277,7 @@ def main():
         elif choice == "3":
             update_contact_process(contact_manager)
         elif choice == "4":
-            pass
+            delete_contact_process(contact_manager)
         elif choice == "5":
             pass
         elif choice == "6":

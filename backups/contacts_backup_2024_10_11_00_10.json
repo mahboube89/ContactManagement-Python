@@ -1,0 +1,39 @@
+[
+    {
+        "name": "sara sabry",
+        "phones": [
+            "01784501323"
+        ],
+        "email": "s-sabry@gmail.de",
+        "address": "Kirchstr.9, 41450 Neuss",
+        "birthday": "12.01.1990"
+    },
+    {
+        "name": "john robert",
+        "phones": [
+            "01754501918",
+            "01652346808"
+        ],
+        "email": "",
+        "address": "",
+        "birthday": "23.09.1970"
+    },
+    {
+        "name": "john smith",
+        "phones": [
+            "01657895432"
+        ],
+        "email": "Js-mit@gmail.com",
+        "address": "",
+        "birthday": ""
+    },
+    {
+        "name": "joojoo",
+        "phones": [
+            "0123422313"
+        ],
+        "email": "",
+        "address": "",
+        "birthday": ""
+    }
+]

@@ -274,3 +274,47 @@ class ContactManager:
                 return True
         return False  # Contact not found
     
+    def delete_contact(self, name):
+        """
+        Deletes a contact by name and saves the updated contact list.
+        
+        Parameters:
+        -----------
+        name : str
+            The name of the contact to be deleted.
+        
+        Returns:
+        --------
+        None
+        """
+        # Confirm if the user really wants to delete the contact
+        while True:
+            confirm = input(f"\n\033[0;91mAre you sure you want to delete '{name}'? (y/n): ").lower().strip()
+            
+            # Valid options for confirmation
+            if confirm in ["yes", "ja", "y"]:
+                
+                # Store the original contact list length to check if a deletion occurs
+                contacts_list_length = len(self.contacts)
+                
+                # Update the contacts list to exclude the contact with the given name
+                self.contacts = [contact for contact in self.contacts if contact.name != name]
+                
+                # If the contact was found and removed, save the updated contact list
+                if len(self.contacts) < contacts_list_length:
+                    self.save_contacts()
+                    hf.show_success_message(f"Contact '{name}' deleted successfully.")
+                else:
+                    hf.show_error_message(f"Contact '{name}' not found.")
+                break  # Exit the loop after successful deletion
+            
+            # If the user cancels the deletion process
+            elif confirm in ["no", "n"]:  
+                hf.show_info_message(f"Deletion of '{name}' was cancelled.")
+                break  # Exit the loop if the user chooses not to delete the contact
+            
+            # Invalid input case
+            else:
+                hf.show_warning_message("Invalid input. Please enter 'y' for yes or 'n' for no.")  
+            
+    
