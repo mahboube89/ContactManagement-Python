@@ -355,6 +355,7 @@ def main():
     """
     # Initialize the ContactManager instance
     contact_manager = ContactManager()
+    hf.clear_terminal()
     
     while True:
         display_menu()  # Display the menu options

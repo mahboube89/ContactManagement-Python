@@ -1,4 +1,6 @@
 import re
+import platform
+import os
 
 
 def show_success_message(message):
@@ -142,3 +144,14 @@ def check_cancel(input_value, process):
         show_error_message(f"{process.title()} process cancelled.")
         return True
     return False
+
+
+def clear_terminal():
+    """
+    Clears the terminal screen based on the user's operating system.
+    """
+    # Check the operating system being used
+    if platform.system() == "Windows":
+        os.system("cls")  # Windows
+    else:
+        os.system("clear")  # Linux/macOS
