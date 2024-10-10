@@ -142,7 +142,47 @@ class ContactManager:
         
         # Save changes and optionally create a backup
         self.save_contacts()
- 
+
+    def display_contacts_table(self):
+        """
+        Displays contacts in a table format.
+        """
+        hf.show_title(f"Displaying {len(self.contacts)} contact(s):")
+                    
+        # Print table header
+        header = f"\n{'Nr.':<5} {'Name':^15} {'Phones':^25} {'Email':^25} {'Address':^30} {'Birthday':^18}"
+        print(header)
+        print("=" * len(header))
+
+        # Print each contact in table format
+        for index, contact in enumerate(self.contacts, start=1):
+            
+            # Show first phone on the same line
+            phones_str = contact.phones[0]
+            print(f"{index:<5} {contact.name:^15} {phones_str:^25} {contact.email or '-':^25} {contact.address or '-':^30} {contact.birthday or '-':^18}")
+
+            # Show additional phone numbers on separate lines
+            for phone in contact.phones[1:]:
+                print(f"{'':^5} {'':^15} {phone:^25} {'':^25} {'':^30} {'':^18}")
+            
+            # Divider after each contact
+            print("-" * len(header))
+
+    def display_contacts_one_by_one(self):
+        """
+        Displays contacts one by one with full details.
+        """
+        hf.show_title(f"Displaying {len(self.contacts)} contact(s):")
+        for contact in self.contacts:
+            phones_str = ", ".join(contact.phones)
+            print(f"{'-'*40}")
+            print(f"Name:      {contact.name.title()}")
+            print(f"Phones:    {phones_str}")
+            print(f"Email:     {contact.email if contact.email else '-'}")
+            print(f"Address:   {contact.address if contact.address else '-'}")
+            print(f"Birthday:  {contact.birthday if contact.birthday else '-'}")
+            print(f"{'-'*40}\n")
+
     def show_contacts(self):
         """
         Displays all saved contacts. Provides two viewing themes: table format or one by one.
@@ -161,43 +201,15 @@ class ContactManager:
                 view_option = input("Please choose a view option or '0' to cancel: ").strip()
                 
                 if view_option == "1":  # Table format
-                    hf.show_title(f"Displaying {len(self.contacts)} contact(s):")
-                    
-                    # Print table header
-                    header = f"\n{'Nr.':<5} {'Name':^15} {'Phones':^25} {'Email':^25} {'Address':^30} {'Birthday':^18}"
-                    print(header)
-                    print("=" * len(header))
-
-                    # Print each contact in table format
-                    for index, contact in enumerate(self.contacts, start=1):
-                        
-                        # Show first phone on the same line
-                        phones_str = contact.phones[0]
-                        print(f"{index:<5} {contact.name:^15} {phones_str:^25} {contact.email or '-':^25} {contact.address or '-':^30} {contact.birthday or '-':^18}")
-
-                        # Show additional phone numbers on separate lines
-                        for phone in contact.phones[1:]:
-                            print(f"{'':^5} {'':^15} {phone:^25} {'':^25} {'':^30} {'':^18}")
-                        
-                        # Divider after each contact
-                        print("-" * len(header))
+                    self.display_contacts_table()
                     break
                         
                 elif view_option == "2":  # One by one view
-                    hf.show_title(f"Displaying {len(self.contacts)} contact(s):")
-                    for contact in self.contacts:
-                        phones_str = ", ".join(contact.phones)
-                        print(f"{'-'*40}")
-                        print(f"Name:      {contact.name.title()}")
-                        print(f"Phones:    {phones_str}")
-                        print(f"Email:     {contact.email if contact.email else '-'}")
-                        print(f"Address:   {contact.address if contact.address else '-'}")
-                        print(f"Birthday:  {contact.birthday if contact.birthday else '-'}")
-                        print(f"{'-'*40}\n")
+                    self.display_contacts_one_by_one()
                     break
                         
                 elif view_option == "0":  # Cancel and return to main menu
-                    print("Returning to the main menu.\n")
+                    hf.show_info_message("Returning to the main menu.\n")
                     break  # Exit the loop and return to the main menu
                 else:
                     # Handle invalid view option choice
