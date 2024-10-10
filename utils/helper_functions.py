@@ -90,7 +90,12 @@ def is_valid_phone(phone):
     """
     Validates phone numbers (only digits, min length 7).
     """
-    return phone.isdigit() and len(phone) >= 7
+    
+    # Regex to match international phone numbers starting with "+" followed by digits, spaces, or hyphens
+    phone_regex = r"^\+?[0-9\s\-]+$"
+    
+    # Check if the phone number matches the pattern
+    return re.match(phone_regex, phone) is not None
 
 
 def get_phones():
@@ -99,13 +104,13 @@ def get_phones():
     """
     phones = []
     while True:
-        phone = phone = input("\n- Enter phone number (or type 'done' to finish): ")
+        phone = phone = input("\n- Enter phone number (or type 'done' to finish): ").strip()
         if phone.lower() == "done":
             break
         if is_valid_phone(phone):
             phones.append(phone)
         else:
-            print("Invalid phone number. Please enter a valid 10-digit number.")
+            show_error_message("Invalid phone number. Please enter a valid 10-digit number.")
     return phones
 
 
