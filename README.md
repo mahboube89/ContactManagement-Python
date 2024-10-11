@@ -21,12 +21,15 @@ A simple and easy-to-use Contact Management System developed in Python. It allow
 Ensure you have Python installed on your system. This project requires Python 3.6 or higher.
 
 ### Installation
-    1- Clone this repository to your local machine:
+1- Clone this repository to your local machine:
+
 ```bash
 git@github.com:mahboube89/ContactManagement-Python.git
-
 ```
-    2- Navigate to the project directory:
+
+2- Navigate to the project directory:
+
+
 ```bash
 cd contact-management-system`
 ```
