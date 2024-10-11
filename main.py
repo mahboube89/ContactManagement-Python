@@ -91,22 +91,11 @@ def add_new_contact(contact_manager):
     contact_manager.add_contact(name, phones, email, address, birthday)
 
 
-def update_contact_process(contact_manager):
+def search_and_select_contact(contact_manager, name):
     """
-    Handles the process of updating a contact's details.
-    
-    Parameters:
-    -----------
-    contact_manager : ContactManager
-        The instance of the ContactManager class that manages contacts.
+    Search for a contact by name and allow the user to select the correct contact
+    if multiple contacts are found.
     """
-    hf.clear_terminal()
-    # Show title for editing contacts
-    hf.show_title("Edit contact details")
-    
-    # Prompt user to enter the name of the contact to update
-    name = input("Enter the name of the contact to update: ")
-    
     # Search for matching contacts
     found_contacts = contact_manager.search_contact(name)
     
@@ -125,30 +114,42 @@ def update_contact_process(contact_manager):
         # Allow user to select the correct contact
         try:
             choice = int(input("\nEnter the number of the contact to update: ")) - 1
+            
             if choice < 0 or choice >= len(found_contacts):
                 hf.show_error_message("Invalid choice.")
-                return
-            contact = found_contacts[choice]
-            print(contact)
+                return None
+            
+            print(found_contacts[choice])
+            return found_contacts[choice]
             
         except ValueError:
             hf.show_error_message("Invalid input. Please enter a number.")
-            return
+            return None
     else:
         # If only one contact is found, proceed with that contact
-        contact = found_contacts[0]
-        
-        # Show current contact details
-        for i, contact in enumerate(found_contacts, start=1):
-            phones_str = ", ".join([hf.format_phone_number(phone) for phone in contact.phones])
-            print(f"{'-'*40}")
-            print(f"Name:      {contact.name.title()}")
-            print(f"Phones:    {phones_str}")
-            print(f"Email:     {contact.email if contact.email else '-'}")
-            print(f"Address:   {contact.address if contact.address else '-'}")
-            print(f"Birthday:  {contact.birthday if contact.birthday else '-'}")
-            print(f"{'-'*40}\n")
+        return found_contacts[0]
 
+
+def show_contact_details(contact):
+    """
+    Display the current details of the contact.
+    """
+    # Show current contact details
+    # for i, contact in enumerate(found_contacts, start=1):
+    phones_str = ", ".join([hf.format_phone_number(phone) for phone in contact.phones])
+    print(f"{'-'*40}")
+    print(f"Name:      {contact.name.title()}")
+    print(f"Phones:    {phones_str}")
+    print(f"Email:     {contact.email if contact.email else '-'}")
+    print(f"Address:   {contact.address if contact.address else '-'}")
+    print(f"Birthday:  {contact.birthday if contact.birthday else '-'}")
+    print(f"{'-'*40}\n")
+
+
+def get_update_contact_details(contact):
+    """
+    Get updated contact details from the user. Allows the user to leave fields unchanged or cancel the process.
+    """
     # Get new details from the user, with options to leave fields unchanged
     new_name = hf.get_valid_input(
         "- Enter new name (leave blank to keep unchanged or type '0' to Exit): ",
@@ -188,14 +189,54 @@ def update_contact_process(contact_manager):
         return
     new_birthday = new_birthday or contact.birthday
     
+    return {
+        "new_name": new_name,
+        "new_phones": new_phones,
+        "new_email": new_email,
+        "new_address": new_address,
+        "new_birthday": new_birthday
+    }
+
+
+def update_contact_process(contact_manager):
+    """
+    Handles the process of updating a contact's details.
+    
+    Parameters:
+    -----------
+    contact_manager : ContactManager
+        The instance of the ContactManager class that manages contacts.
+    """
+    hf.clear_terminal()
+    # Show title for editing contacts
+    hf.show_title("Edit contact details")
+    
+    # Prompt user to enter the name of the contact to update
+    name = input("Enter the name of the contact to update: ")
+    
+    # Search and select the contact
+    contact = search_and_select_contact(contact_manager, name)
+        
+    if not contact:
+        return
+
+    # Show current contact details
+    show_contact_details(contact)
+    
+    # Get new contact details from the user
+    updated_details = get_update_contact_details(contact)
+    
+    if updated_details is None:
+        return
+    
     # Call the update_contact method with the new values
     if contact_manager.update_contact(
         contact.name,
-        new_name=new_name,
-        new_phones=new_phones,
-        new_email=new_email,
-        new_address=new_address,
-        new_birthday=new_birthday
+        new_name=updated_details["new_name"],
+        new_phones=updated_details["new_phones"],
+        new_email=updated_details["new_email"],
+        new_address=updated_details["new_address"],
+        new_birthday=updated_details["new_birthday"]
     ):
         hf.show_success_message(f"\nContact {contact.name} updated successfully.")
     else:
@@ -368,6 +409,7 @@ def restore_backup(contact_manager):
             hf.show_error_message("Invalid selection.\n")
     except ValueError:
         hf.show_error_message("Invalid input. Please enter a number.\n")
+
 
 def main():
     """
