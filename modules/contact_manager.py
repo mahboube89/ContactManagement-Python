@@ -6,6 +6,11 @@ import utils.helper_functions as hf
 
 
 class ContactManager:
+    """
+    A class to manage contacts, including adding, updating, deleting, and displaying contacts.
+    Also provides functionality for backup and restoration of contacts.
+    """
+    
     def __init__(self, db_name="contacts.json", backup_folder="backups/"):
         """
         The constructor initializes the BackupManager and loads the contacts
