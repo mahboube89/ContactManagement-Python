@@ -151,7 +151,7 @@ def check_cancel(input_value, process):
         Returns True if the user wants to cancel, False otherwise.
     """
     if input_value.lower() in ["exit", "0", "cancel"]:
-        show_error_message(f"{process.title()} process cancelled.")
+        show_error_message(f"\n{process.title()} process cancelled.")
         return True
     return False
 
