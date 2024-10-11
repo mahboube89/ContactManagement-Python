@@ -22,16 +22,21 @@ Ensure you have Python installed on your system. This project requires Python 3.
 
 ### Installation
     1- Clone this repository to your local machine:
-    `git@github.com:mahboube89/ContactManagement-Python.git`
+```bash
+git@github.com:mahboube89/ContactManagement-Python.git
+
+```
     2- Navigate to the project directory:
-    `cd contact-management-system`
+```bash
+cd contact-management-system`
+```
 
 ### Running the Application
 
     1- Run the main Python script to start the contact manager.
-    ```bash
-    python main.p
-    ```
+```bash
+python main.p
+```
 
     2- Follow the menu options to:
     - Add, update, or delete contacts.
