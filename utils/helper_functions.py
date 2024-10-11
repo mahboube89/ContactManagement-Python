@@ -104,9 +104,14 @@ def get_phones():
     """
     phones = []
     while True:
-        phone = phone = input("\n- Enter phone number (or type 'done' to finish): ").strip()
+        phone = input("\n- Enter phone number (or type 'done' to finish): ").strip()
+        
         if phone.lower() == "done":
             break
+        
+        if check_cancel(phone, "add"):
+            return None
+
         if is_valid_phone(phone):
             phones.append(phone)
         else:

@@ -44,14 +44,5 @@
         "email": "",
         "address": "",
         "birthday": ""
-    },
-    {
-        "name": "amir",
-        "phones": [
-            "1892210909"
-        ],
-        "email": "",
-        "address": "",
-        "birthday": ""
     }
 ]

@@ -53,5 +53,14 @@
         "email": "",
         "address": "",
         "birthday": ""
+    },
+    {
+        "name": "julia",
+        "phones": [
+            "0178921010"
+        ],
+        "email": "",
+        "address": "",
+        "birthday": "21.06.1999"
     }
 ]

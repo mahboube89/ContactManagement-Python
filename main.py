@@ -38,13 +38,18 @@ def add_new_contact(contact_manager):
     Returns:
     None
     """
+    hf.clear_terminal()
     # Display title for adding a new contact
     hf.show_title("Add new contact")
     
     # Get and validate the contact's name
     name = hf.get_valid_input(
-        "\n- Enter contact name: ", hf.is_valid_name
+        "\n- Enter contact name (or type 'cancel' to exit): ", hf.is_valid_name
         ).lower().strip()
+    # Check if the user wants to cancel
+    if hf.check_cancel(name, "add"):
+        return
+    
     if name is None:
         hf.show_error_message(
             "Error: Failed to add contact. Invalid name."
@@ -53,6 +58,11 @@ def add_new_contact(contact_manager):
     
     # Get and validate phone numbers
     phones = hf.get_phones()
+    
+    if phones is None:  # If get_phones returns None, the process was cancelled
+        return
+
+    
     if not phones:
         hf.show_error_message(
             "Error: Failed to add contact. No valid phone numbers."
@@ -61,13 +71,21 @@ def add_new_contact(contact_manager):
     
     # Get email, address and birthday (optional)
     email = hf.get_valid_input(
-        "\n- Enter email (optional): ", hf.is_valid_email,
+        "\n- Enter email (optional, or type 'cancel' to exit): ", hf.is_valid_email,
         attempts=1,
         allow_empty=True
         ).lower().strip()
     
-    address = input("\n- Enter address (optional): ")
-    birthday = input("\n- Enter birthday (optional): ")
+    if hf.check_cancel(email, "add"):
+        return
+    
+    address = input("\n- Enter address (optional, or type 'cancel' to exit): ").strip()
+    if hf.check_cancel(address, "add"):
+        return
+
+    birthday = input("\n- Enter birthday (optional, or type 'cancel' to exit): ").strip()
+    if hf.check_cancel(birthday, "add"):
+        return
 
     # Add the contact to the contact manager
     contact_manager.add_contact(name, phones, email, address, birthday)
@@ -82,6 +100,7 @@ def update_contact_process(contact_manager):
     contact_manager : ContactManager
         The instance of the ContactManager class that manages contacts.
     """
+    hf.clear_terminal()
     # Show title for editing contacts
     hf.show_title("Edit contact details")
     
@@ -128,7 +147,6 @@ def update_contact_process(contact_manager):
             print(f"Email:     {contact.email if contact.email else '-'}")
             print(f"Address:   {contact.address if contact.address else '-'}")
             print(f"Birthday:  {contact.birthday if contact.birthday else '-'}")
-            print(f"Notes:     {contact.notes if contact.notes else '-'}")
             print(f"{'-'*40}\n")
 
     # Get new details from the user, with options to leave fields unchanged
@@ -143,6 +161,8 @@ def update_contact_process(contact_manager):
     new_name = new_name or contact.name
     
     new_phones = hf.get_phones() or contact.phones
+    if new_phones is None:  # If get_phones returns None, the process was cancelled
+        return
     
     new_email = hf.get_valid_input(
         "\n- Enter new email (leave blank to keep unchanged or 0 to Exit): ",
@@ -195,6 +215,7 @@ def delete_contact_process(contact_manager):
     --------
     None
     """
+    hf.clear_terminal()
     # Show title for delete process
     hf.show_title("Delete")
     
@@ -264,6 +285,7 @@ def search_contact_process(contact_manager):
     --------
     None
     """
+    hf.clear_terminal()
     # Show title for the search process
     hf.show_title("search")
     
@@ -309,6 +331,9 @@ def restore_backup(contact_manager):
     --------
     None
     """
+    hf.clear_terminal()
+    # Show title for the restore backup process
+    hf.show_title("restore backup")
     # Get a list of recent backups (default: last 3)
     recent_backups = contact_manager.backup_manager.list_recent_backups(n=3)
     

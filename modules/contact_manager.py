@@ -200,7 +200,8 @@ class ContactManager:
         if not self.contacts:
             hf.show_info_message("No contacts found.")
         else:
-            
+            hf.clear_terminal()
+            hf.show_title("show all contacts")
             while True:
                 # Prompt the user to select a view option
                 print("\n\033[1;34m1)\033[0m Display contacts in a table format")
