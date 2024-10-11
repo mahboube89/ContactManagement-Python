@@ -29,7 +29,9 @@ Ensure you have Python installed on your system. This project requires Python 3.
 ### Running the Application
 
     1- Run the main Python script to start the contact manager.
-    `python main.py`
+    ```bash
+    python main.p
+    ```
 
     2- Follow the menu options to:
     - Add, update, or delete contacts.
@@ -38,7 +40,7 @@ Ensure you have Python installed on your system. This project requires Python 3.
     - Backup and restore contacts.
 
 ## File Structure
-
+```bash
 ├── contacts.json           # Stores all contact data in JSON format
 ├── backups/                # Directory containing backup files
 ├── main.py                 # Main entry point for running the program
@@ -48,7 +50,11 @@ Ensure you have Python installed on your system. This project requires Python 3.
 │   └── backup_manager.py   # Manages backup and restore operations
 └── utils/                  # Helper functions and utilities
     └── helper_functions.py # Functions for handling terminal messages and other utilities
+```
 
+### Repository
+
+[ContactManagement-Python GitHub Repository](https://github.com/mahboube89/ContactManagement-Python.git)
 
 ## License
 This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
